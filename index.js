@@ -6,7 +6,9 @@ const port = 3000;
 
 
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const {
+    Schema
+} = mongoose;
 
 const fehSchema = new Schema({
     name: String,
@@ -27,103 +29,88 @@ const FehHeroes = mongoose.model('FehHeroes', fehSchema);
 // const feh = new FehHeroes({ name: "Lucina", title: "the swordy girl", ultAtk: 1 / 4, stats: { hp: 39, atk: 43, spd: 40, def: 52, res: 10 }, isLegend: false, isMythic: false });
 
 
-
 const path = require('path');
-const { stringify } = require('querystring');
-app.use(bodyParser.urlencoded({ extended: false }));
-
-
-const ike = new FehHeroes({ name: 'Ike', title: "the Dawn legend", ultAtk: 1 / 2, stats: { "hp": 40, "atk": 51, "spd": 42, "def": 32, "res": 23 }, isLegend: true, isMythic: false });
-// const ephraim = new FehHeroes("Ephraim", "the lance master", 1 / 3, { hp: 45, atk: 51, spd: 25, def: 42, res: 20 }, false, true);
-const ophelia = new FehHeroes({ name: "Ophelia", title: "the twilight witch", ultAtk: 1 / 3, stats: { hp: 30, atk: 60, spd: 43, def: 20, res: 15 }, isLegend: true, isMythic: true });
-let fehHeroesY = [ike, ophelia];
-// console.log(ike);
+const {
+    stringify
+} = require('querystring');
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 
 app.get('/', (req, res) => {
     res.send('Théodore CADET');
 })
-// app.get('/message', (req, res) => {
-//     res.send("it's-a me Mario");
-// })
-// app.get('/othermessage', (req, res) => {
-//     res.send("it's-a me Luigi");
-// })
-app.get('/showheroes', (req, res) => {
+
+app.get('/show-heroes', (req, res) => {
+    console.log("lol");
     FehHeroes.find((err, result) => {
-        //in case there is an error with our Dog model, we we will send it to the user(postman)
+        // in case there is an error with our FehHeroes model, we we will send it to the user(postman)
         if (err) {
-            res.send("Error occured no dog retrieved")
+            res.send("Error occured no Hero found")
             return
         }
-        //if no error send the array conting dogs to the user/postman
+        // if no error send the array conting heroes to the user/postman
         res.send(result)
-        //log the result in the console as well
+        // log the result in the console as well
         console.log(result)
     })
+
 })
-app.get('/showheroes/:id', (req, res) => {
+
+// this query will will only return first element found
+app.get('/show-heroes/:id', (req, res) => {
     const id = req.params.id;
-    // we use the findById query, details on https://mongoosejs.com/docs/queries.html
-    // this query only returns one element
-    // you can also use findOneById
-    // you can also use findOne({_id:}) - this query will find depending on other properties,
-    //                                    e.g. breed, name
-    //                                    will only return first element found
-    // to return more then 1 element use find({}) // see previous request
+
     FehHeroes.findById(id, (err, hero) => {
         if (err) {
             res.send("Hero not found")
 
         }
-        //"dog" is an object file retrieved from the database
-        //"dog" will only be defined if there is a dog with the specific id
+        //"hero" is an object file retrieved from the database
+        //"hero" will only be defined if there is a hero with the specific id
         // inside the Database
-        // for a wrong ID, "dog" will be undefined
+        // for a wrong ID, "hero" will be undefined
 
         //we will send it back to the user/postman
         res.send(hero)
-        console.log(hero)
+        console.log(hero);
     })
+
 })
-app.post('/showheroes', (req, res) => {
-    // res.send("yay ya post it");
-    console.log(req.body);
+app.post('/post-heroes', (req, res) => {
+    // console.log(req.body);
     let name = req.body.name;
     let title = req.body.title;
     let ultAtk = parseFloat(req.body.ultAtk);
 
-    // in postman it should be that => {"hp":45,"atk":51,"spd":25,"def":42,"res":20} 
+    // On postman it should be written like this :
+    // {"hp":45,"atk":51,"spd":25,"def":42,"res":20} 
     let stats = JSON.parse(req.body.stats);
-    // console.log(stats);
-    // console.log("here ars the stats :"+typeof stats); 
-    // console.log(req.body.ultAtk);
-    // console.log(parseFloat(req.body.ultAtk));
-    // hp: req.body.stats.hp,
-    // atk: req.body.stats.atk,
-    // spd: req.body.stats.spd,
-    // def: req.body.stats.def,
-    // res: req.body.stats.res,
-
 
     let isLegend = (req.body.isLegend === 'true');
     let isMythic = (req.body.isMythic === 'true');
-    let newHero = new FehHeroes({ name: name, title: title, ultAtk: ultAtk, stats: stats, isLegend: isLegend, isMythic: isMythic });
+
+    // We will take the information from postman to post the new hero
+    let newHero = new FehHeroes({
+        name: name,
+        title: title,
+        ultAtk: ultAtk,
+        stats: stats,
+        isLegend: isLegend,
+        isMythic: isMythic
+    });
     newHero.save(err => {
         if (err) {
             // if error send a message to let the user know
-            res.send('Hero not inseted into the database')
+            res.send('Hero was not inserted into the database')
         }
         //send a message to the user with the result
-        res.send("Hero inserted into the database")
+        res.send("Hero was inserted into the database")
         console.log("Hero is in the database")
     })
 })
 
-app.delete('/deleteHeroes/:id', (req, res) => {
-    // You can use findOneAndDelete({_id:})
-    // or
-    // You can use findByIdAndDelete(id)
-    //see https://mongoosejs.com/docs/api.html#model_Model.findByIdAndDelete
+app.delete('/delete-heroes/:id', (req, res) => {
     FehHeroes.findByIdAndDelete(req.params.id, err => {
         if (err) {
             res.send("Hero did not delete")
@@ -131,57 +118,38 @@ app.delete('/deleteHeroes/:id', (req, res) => {
         }
         res.send("Hero deleted")
         console.log(`Hero with id ${req.params.id} is now deleted`)
-        // console.log("Hero with id "+req.params.id + "is now deleted")
     })
 
 
 
 })
 
-app.put('/editHero/:id', (req, res) => {
-    // you can use fineOneAndUpdate() see https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate
-    // or
-    // you can use findByIdAndUpdate() see https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
-    // You can use req.params.id to send the _id and req.body for your new variables
-    // or you can send all variables, including id, in req.body
-
+app.put('/edit-heroes/:id', (req, res) => {
+    // edit a specific hero from the database
     console.log("Trying to edit");
-    let name = req.body.name;
-    let title = req.body.title;
-    let ultAtk = parseFloat(req.body.ultAtk);
-    let stats = JSON.parse(req.body.stats);
-    let isLegend = (req.body.isLegend === 'true');
-    let isMythic = (req.body.isMythic === 'true');
-    // let newHero = new FehHeroes({ name: name, title: title, ultAtk: ultAtk, stats: stats, isLegend: isLegend, isMythic: isMythic });
-    FehHeroes.findByIdAndUpdate(req.params.id, { name: name, title: title, ultAtk: ultAtk, stats: stats, isLegend: isLegend, isMythic: isMythic }, err => {
+
+    FehHeroes.findByIdAndUpdate(req.params.id, {
+        // if there's nothing to update, the value will stay the same 
+        name: req.body.name == undefined ? req.params.name : req.body.name,
+        title: req.body.title == undefined ? req.params.title : req.body.title,
+        ultAtk: req.body.ultAtk == undefined ? req.params.ultAtk : req.body.ultAtk,
+        stats: req.body.stats == undefined ? req.params.stats : JSON.parse(req.body.stats),
+        isLegend: req.body.isLegend == undefined ? req.params.isLegend : (req.body.isLegend === 'true'),
+        isMythic: req.body.isMythic == undefined ? req.params.isMythic : (req.body.isMythic === 'true')
+    }, err => {
         if (err) {
-            res.send("It didn't edit")
+            res.send("It didn't edit. The error is: " + err)
             return;
-
         }
-        res.send("It did edit")
+        console.log("It has been edited");
+        res.send("It's has been edited")
     })
-    FehHeroes.findByIdAndUpdate(req.params.id,
-        {
-            name: req.body.name,
-            age: ((parseInt(req.body.age) == NaN) ? 0 : parseInt(req.body.age)),
-            breed: req.body.breed,
-            isNeutred: (req.body.isNeutred === 'true')
-        }, err => {
-            if (err) {
-                res.send("It didn't edit. The error is: " + err)
-                return;
-            }
-            res.send("It did edit")
-        })
-
-
 })
 
-app.post('/feh/', (req, res) => {
-    console.log("inserting in db");
-    fehSchema
-})
+// app.post('/feh/', (req, res) => {
+//     console.log("inserting in db");
+//     fehSchema
+// })
 
 
 
