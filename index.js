@@ -75,8 +75,32 @@ app.get('/show-heroes/:id', (req, res) => {
         res.send(hero)
         console.log(hero);
     })
-
 })
+
+// will get all the heroes with the same name 
+app.get('/show-heroes-named/:name', (req, res) => {
+    const name = req.params.name;
+
+    FehHeroes.find({
+            name: name
+        },
+        function (err, hero) {
+            if (err) {
+                res.send("Hero not found")
+            }
+            //"hero" is an object file retrieved from the database
+            //"hero" will only be defined if there is a hero with the specific id
+            // inside the Database
+            // for a wrong ID, "hero" will be undefined
+
+            //we will send it back to the user/postman
+            res.send(hero)
+            console.log(hero)
+        }
+    )
+})
+
+
 app.post('/post-heroes', (req, res) => {
     // console.log(req.body);
     let name = req.body.name;
