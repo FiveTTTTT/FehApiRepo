@@ -153,7 +153,7 @@ app.put('/edit-heroes/:id', (req, res) => {
     console.log("Trying to edit");
 
     FehHeroes.findByIdAndUpdate(req.params.id, {
-        // if there's nothing to update, the value will stay the same 
+        // keep the old value if there's nothing
         name: req.body.name == undefined ? req.params.name : req.body.name,
         title: req.body.title == undefined ? req.params.title : req.body.title,
         ultAtk: req.body.ultAtk == undefined ? req.params.ultAtk : req.body.ultAtk,
