@@ -45,13 +45,13 @@ app.get('/show-heroes', (req, res) => {
     FehHeroes.find((err, result) => {
         // in case there is an error with our FehHeroes model, we we will send it to the user(postman)
         if (err) {
-            res.send("Error occured no Hero found")
+            res.send("Error occured no Hero found");
             return
         }
         // if no error send the array conting heroes to the user/postman
         res.send(result)
         // log the result in the console as well
-        console.log(result)
+        console.log(result);
     })
 
 })
@@ -62,10 +62,10 @@ app.get('/show-heroes/:id', (req, res) => {
 
     FehHeroes.findById(id, (err, hero) => {
         if (err) {
-            res.send("Hero not found")
-
+            res.send("Hero not found");
+            return;
         }
-        res.send(hero)
+        res.send(hero);
         console.log(hero);
     })
 })
@@ -79,18 +79,23 @@ app.get('/show-heroes-named/:name', (req, res) => {
         },
         function (err, hero) {
             if (err) {
-                res.send("Hero not found")
+                res.send("Hero not found");
+                return;
+            }
+            if (hero.length == 0) {
+                res.send("Hero not found");
+                return;
             }
 
-            res.send(hero)
-            console.log(hero)
+            res.send(hero);
+            console.log(hero);
         }
     )
 })
 
 
 app.post('/post-heroes', (req, res) => {
-    let name = req.body.name;
+    let name = req.body.name.toLowerCase();
     let title = req.body.title;
     let ultAtk = parseFloat(req.body.ultAtk);
 
@@ -113,22 +118,23 @@ app.post('/post-heroes', (req, res) => {
     newHero.save(err => {
         if (err) {
             // if error send a message to let the user know
-            res.send('Hero was not inserted into the database')
+            res.send('Hero was not inserted into the database');
+            return;
         }
         //send a message to the user with the result
-        res.send("Hero was inserted into the database")
-        console.log("Hero is in the database")
+        res.send("Hero was inserted into the database");
+        console.log("Hero is in the database");
     })
 })
 
 app.delete('/delete-heroes/:id', (req, res) => {
     FehHeroes.findByIdAndDelete(req.params.id, err => {
         if (err) {
-            res.send("Hero was not deleted")
-            return
+            res.send("Hero was not deleted");
+            return;
         }
-        res.send("Hero deleted")
-        console.log(`Hero with id ${req.params.id} is now deleted`)
+        res.send("Hero deleted");
+        console.log(`Hero with id ${req.params.id} is now deleted`);
     })
 
 
@@ -149,11 +155,11 @@ app.put('/edit-heroes/:id', (req, res) => {
         isMythic: req.body.isMythic == undefined ? req.params.isMythic : (req.body.isMythic === 'true')
     }, err => {
         if (err) {
-            res.send("It didn't edit. The error is: " + err)
+            res.send("It didn't edit. The error is: " + err);
             return;
         }
         console.log("It has been edited");
-        res.send("It's has been edited")
+        res.send("It's has been edited");
     })
 })
 
@@ -162,5 +168,5 @@ app.listen(port, () => {
     mongoose.connect('mongodb+srv://admin:admin@fehapi.leurh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 
 
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`Example app listening at http://localhost:${port}`);
 })
