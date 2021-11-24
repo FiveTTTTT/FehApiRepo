@@ -27,4 +27,6 @@ the user to past request with Postman :
 - **delete** an hero from the database depending on the id
 - **edit** the variables of one hero(keep the old value if there's nothing) 
 
+In Postman for the Post and Put request we use Body > x-www-form-urlencoded to past the informations instead of just Params because Params correspond to the request parameters that are appended to the request URL. they are most used with GET requests, actually Body is more suited for request in general. Also there's a bit security using Body > x-www-form-urlencoded because the information used in the request aren't easely readable.
+
 
