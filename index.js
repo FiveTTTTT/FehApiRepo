@@ -42,7 +42,6 @@ app.get('/', (req, res) => {
 })
 
 app.get('/show-heroes', (req, res) => {
-    console.log("lol");
     FehHeroes.find((err, result) => {
         // in case there is an error with our FehHeroes model, we we will send it to the user(postman)
         if (err) {
@@ -66,12 +65,6 @@ app.get('/show-heroes/:id', (req, res) => {
             res.send("Hero not found")
 
         }
-        //"hero" is an object file retrieved from the database
-        //"hero" will only be defined if there is a hero with the specific id
-        // inside the Database
-        // for a wrong ID, "hero" will be undefined
-
-        //we will send it back to the user/postman
         res.send(hero)
         console.log(hero);
     })
@@ -88,12 +81,7 @@ app.get('/show-heroes-named/:name', (req, res) => {
             if (err) {
                 res.send("Hero not found")
             }
-            //"hero" is an object file retrieved from the database
-            //"hero" will only be defined if there is a hero with the specific id
-            // inside the Database
-            // for a wrong ID, "hero" will be undefined
 
-            //we will send it back to the user/postman
             res.send(hero)
             console.log(hero)
         }
@@ -102,13 +90,12 @@ app.get('/show-heroes-named/:name', (req, res) => {
 
 
 app.post('/post-heroes', (req, res) => {
-    // console.log(req.body);
     let name = req.body.name;
     let title = req.body.title;
     let ultAtk = parseFloat(req.body.ultAtk);
 
     // On postman it should be written like this :
-    // {"hp":45,"atk":51,"spd":25,"def":42,"res":20} 
+    // { "hp": 45,"atk": 51,"spd": 25,"def": 42,"res":  20 } 
     let stats = JSON.parse(req.body.stats);
 
     let isLegend = (req.body.isLegend === 'true');
@@ -137,7 +124,7 @@ app.post('/post-heroes', (req, res) => {
 app.delete('/delete-heroes/:id', (req, res) => {
     FehHeroes.findByIdAndDelete(req.params.id, err => {
         if (err) {
-            res.send("Hero did not delete")
+            res.send("Hero was not deleted")
             return
         }
         res.send("Hero deleted")
@@ -169,12 +156,6 @@ app.put('/edit-heroes/:id', (req, res) => {
         res.send("It's has been edited")
     })
 })
-
-// app.post('/feh/', (req, res) => {
-//     console.log("inserting in db");
-//     fehSchema
-// })
-
 
 
 app.listen(port, () => {
