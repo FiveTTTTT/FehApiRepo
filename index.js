@@ -46,10 +46,10 @@ app.get('/show-heroes', (req, res) => {
         // in case there is an error with our FehHeroes model, we we will send it to the user(postman)
         if (err) {
             res.send("Error occured no Hero found");
-            return
+            return;
         }
         // if no error send the array conting heroes to the user/postman
-        res.send(result)
+        res.send(result);
         // log the result in the console as well
         console.log(result);
     })
@@ -136,9 +136,6 @@ app.delete('/delete-heroes/:id', (req, res) => {
         res.send("Hero deleted");
         console.log(`Hero with id ${req.params.id} is now deleted`);
     })
-
-
-
 })
 
 app.put('/edit-heroes/:id', (req, res) => {
